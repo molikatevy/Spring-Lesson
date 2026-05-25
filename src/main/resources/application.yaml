@@ -1,0 +1,27 @@
+#spring.application.name=
+
+myapp:
+  info: "Testing App"
+  version: 4
+  year: 2023
+  price: 30.3
+  port: "${server.port:18000}"
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Spring-boot-feature-ite
+  threads:
+    virtual:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+#        include:"*" #Not recomment in prod
+
+
