@@ -1,10 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Coffee;
 import com.example.demo.dto.CoffeeResponse;
+import com.example.demo.dto.CreateResquest;
 import com.example.demo.service.CoffeeService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -18,9 +24,16 @@ public class CoffeeController {
     }
 
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/add")
+    public CoffeeResponse CreateCoffee(@Valid @RequestBody CreateResquest createResquest){
+        return coffeeService.addCoffee(createResquest);
+
+
+    }
 
     @GetMapping
-    public List<CoffeeResponse> getCoffee(){
+    public List<Coffee> getCoffee(){
         return coffeeService.getCoffee();
     }
 
@@ -32,19 +45,16 @@ public class CoffeeController {
 //                .filter(Coffee -> Coffee.equals(id))
 //                .map(CoffeeService -> coffeeService.getCoffee())
 //                .toList();
-
-
-
         return coffeeService.getCoffeeById(id);
     }
 
     @GetMapping("/search")
     public List<CoffeeResponse> searchCoffeeByName(
            @RequestParam(required = false, defaultValue = "") String name,
-           @RequestParam(required = false, defaultValue = "0") Double price
+           @RequestParam(required = false, defaultValue = "0") BigDecimal price
     ){
         log.info("@Get name: {}",name);
         log.info("@Get price: {}",price);
-        return coffeeService.searchCoffeeByName(name);
+        return coffeeService.searchCoffeeByName(name,price);
     }
 }
