@@ -39,7 +39,7 @@ private final List<Coffee> coffees;
         coffees.add(coffee2);
         coffees.add(coffee3);
     }
-
+@Bean
     public List<Coffee> getCoffees() {
         return coffees;
     }

@@ -3,9 +3,12 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.Coffee;
 import com.example.demo.dto.CoffeeResponse;
 import com.example.demo.dto.CreateResquest;
+import com.example.demo.dto.UpdateCoffeeRequest;
 import com.example.demo.repository.CoffeeRepository;
 import com.example.demo.service.CoffeeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -75,6 +78,51 @@ public class CoffeeServiceImpl implements CoffeeService {
 
         coffeeRepository.getCoffees().add(coffee);
         return new CoffeeResponse(coffee.getId(), coffee.getName(), coffee.getDescription());
+    }
+
+
+
+    @Override
+    public CoffeeResponse updateCoffeeByID(Integer id,UpdateCoffeeRequest updateCoffeeRequest) {
+
+//        validation coffee ID exist or not
+
+        return coffeeRepository.getCoffees()
+                .stream()
+                .filter(coffee -> coffee.getId().equals(id))
+                .findFirst()
+                .map(oldcoffee -> {
+                    oldcoffee.setName(updateCoffeeRequest.name());
+                    oldcoffee.setDescription(updateCoffeeRequest.description());
+                    oldcoffee.setPrice(BigDecimal.valueOf(updateCoffeeRequest.price()));
+
+
+                    return oldcoffee;
+                })
+                .map(newcoffee-> new CoffeeResponse(newcoffee.getId(), newcoffee.getName(), newcoffee.getDescription()))
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("Coffee ID = %d doesn't exist in database",id)));
+
+                }
+
+    @Override
+    public CoffeeResponse deleteCoffeeByID(Integer id) {
+
+        Coffee coffee = coffeeRepository.getCoffees()
+                .stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Coffee ID = %d doesn't exist in database", id)
+                ));
+
+        coffeeRepository.getCoffees().remove(coffee);
+
+        return new CoffeeResponse(
+                coffee.getId(),
+                coffee.getName(),
+                coffee.getDescription()
+        );
     }
 
 

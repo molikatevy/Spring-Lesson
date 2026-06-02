@@ -3,11 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.domain.Coffee;
 import com.example.demo.dto.CoffeeResponse;
 import com.example.demo.dto.CreateResquest;
+import com.example.demo.dto.UpdateCoffeeRequest;
 import com.example.demo.service.CoffeeService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -24,11 +24,28 @@ public class CoffeeController {
     }
 
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public CoffeeResponse deleteCoffeeById(@PathVariable Integer id){
+        return coffeeService.deleteCoffeeByID(id);
+
+    }
+
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/add")
     public CoffeeResponse CreateCoffee(@Valid @RequestBody CreateResquest createResquest){
         return coffeeService.addCoffee(createResquest);
 
+
+    }
+
+    @PutMapping("/{id}")
+    public CoffeeResponse updateCoffeeById(
+            @PathVariable Integer id,
+            @Valid @RequestBody UpdateCoffeeRequest updateCoffeeRequest
+            ){
+        return coffeeService.updateCoffeeByID(id,updateCoffeeRequest);
 
     }
 
